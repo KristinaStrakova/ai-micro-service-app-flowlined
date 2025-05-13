@@ -6,6 +6,7 @@ import cohere
 import numpy as np
 from app.app_time.time_state import app_start_time
 import time
+from loguru import logger
 
 # Load environment variables from .env file
 load_dotenv()
@@ -26,6 +27,7 @@ class SummarizeResponse(BaseModel):
 
 @router.post("/summarize", response_model=SummarizeResponse)
 async def summarize(req: SummarizeRequest):
+    logger.info("Received summarize request")
     try:
         response = co.summarize(
             text=req.text,
@@ -33,8 +35,11 @@ async def summarize(req: SummarizeRequest):
             format="paragraph",
             model="command"
         )
+        logger.info("Cohere summary successful")
         return {"summary": response.summary}
+        
     except Exception as e:
+        logger.error(f"Summarization failed: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
     
 # Text Similarity Endpoint
@@ -49,6 +54,7 @@ class SimilarityResponse(BaseModel):
 
 @router.post("/similarity", response_model=SimilarityResponse)
 async def get_most_similar(req: SimilarityRequest):
+    logger.info("Received similarity request")
     try:
         texts_to_embed = [req.query] + req.texts
         embeddings = co.embed(
@@ -56,8 +62,6 @@ async def get_most_similar(req: SimilarityRequest):
                                model="embed-english-v3.0",
                                input_type="classification"
                                ).embeddings
-
-
         query_embedding = embeddings[0]
         text_embeddings = embeddings[1:]
 
@@ -67,12 +71,13 @@ async def get_most_similar(req: SimilarityRequest):
         scores = [cosine_similarity(query_embedding, emb) for emb in text_embeddings]
         best_index = int(np.argmax(scores))
 
+        logger.info(f"Most similar text: {req.texts[best_index]} with score: {scores[best_index]}")
         return {
             "closest_text": req.texts[best_index],
             "score": round(float(scores[best_index]), 5)
         }
-
     except Exception as e:
+        logger.error(f"Similarity calculation failed: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 # Health Check Endpoint - Bonus
