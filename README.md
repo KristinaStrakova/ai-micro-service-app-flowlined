@@ -38,14 +38,7 @@ ai-text_service/
 
 ## How to Set Up & Run
 
-### 1. Clone the repository
-
-```bash
-
-TO DO:
-```
-
-### 2. Set your environment variables
+### 1. Set your environment variables
 
 Create a `.env` file in the root:
 
@@ -53,7 +46,7 @@ Create a `.env` file in the root:
 COHERE_API_KEY=for_now_there_is_mine
 ```
 
-### 3. Run Pytests
+### 2. Run Pytests
 
 ```bash
 pytest /tests
