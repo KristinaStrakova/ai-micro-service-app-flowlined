@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import os
 import cohere
 import numpy as np
-from ai_text_service.app.app_time.time_state import app_start_time
+from app.app_time.time_state import app_start_time
 import time
 from loguru import logger
 
@@ -28,9 +28,6 @@ class SummarizeResponse(BaseModel):
 @router.post("/summarize", response_model=SummarizeResponse)
 async def summarize(req: SummarizeRequest):
     logger.info("Received summarize request")
-    if req.text is None or req.text == "":
-        logger.error("Input text is empty")
-        raise HTTPException(status_code=400, detail="The 'text' field must not be empty.")
     try:
         response = co.summarize(
             text=req.text,
@@ -58,15 +55,6 @@ class SimilarityResponse(BaseModel):
 @router.post("/similarity", response_model=SimilarityResponse)
 async def get_most_similar(req: SimilarityRequest):
     logger.info("Received similarity request")
-
-    if req.query is None or req.query == "":
-        logger.error("Query text is empty")
-        raise HTTPException(status_code=400, detail="The 'query' field must not be empty.")
-    
-    if req.texts is None or len(req.texts) == 0:
-        logger.error("Input texts list is empty")
-        raise HTTPException(status_code=400, detail="The 'texts' field must not be empty.")
-
     try:
         texts_to_embed = [req.query] + req.texts
         embeddings = co.embed(
