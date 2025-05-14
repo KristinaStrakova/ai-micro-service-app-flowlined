@@ -30,8 +30,7 @@ ai-text_service/
 │   │   │   ├── endpoints.py        # Cohere - Summarize, Similiarity function (+ health check)
 │   │   ├── app_time/
 │   │   │   ├── time_state.py       # Time stamp of application
-│   │   ├── tests/
-│   │   │   └── test_endpoints.py   # Pytests
+
 
 ```
 ---
