@@ -1,93 +1,120 @@
-# AI Micro-Service Coding Challenge 
 
+# AI Micro-Service Coding Challenge
 
+## Introduction
 
-## Getting started
+This project is a simple FastAPI-based microservice that exposes two main functionalities:
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+- **Summarization** of text using Cohere's language model.
+- **Semantic similarity matching** between a query and list of texts.
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+I originally planned to use OpenAI models, it was later changed to Cohere due to API key quota limitations. The service is containerized with Docker and includes automated tests using Pytest.
 
-## Add your files
+---
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+## Project Contents
+
+```bash
+.
+ai-text_service/
+├── .env                            #Cohere with API key
+├── .gitignore                      #.gitignore
+├── README.md                       #Documentation Overview
+├── docker-compose.yml              #Compose set up for local
+├── Dockerfile                      #Docker configuration
+├── requirements.txt                #Python independencies
+├── ai_text_service/                
+│   ├── app/
+│   │   ├── main.py                 # FastAPI application setup
+│   │   ├── api/
+│   │   │   ├── endpoints.py        # Cohere - Summarize, Similiarity function (+ health check)
+│   │   ├── app_time/
+│   │   │   ├── time_state.py       # Time stamp of application
+│   │   ├── tests/
+│   │   │   └── test_endpoints.py   # Pytests
 
 ```
-cd existing_repo
-git remote add origin https://git.fhict.nl/I528255/ai-micro-service-coding-challenge.git
-git branch -M main
-git push -uf origin main
+---
+
+## How to Set Up & Run
+
+### 1. Clone the repository
+
+```bash
+
+TO DO:
 ```
 
-## Integrate with your tools
+### 2. Set your environment variables
 
-- [ ] [Set up project integrations](https://git.fhict.nl/I528255/ai-micro-service-coding-challenge/-/settings/integrations)
+Create a `.env` file in the root:
 
-## Collaborate with your team
+```env
+COHERE_API_KEY=for_now_there_is_mine
+```
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+### 3. Run with Docker Compose
 
-## Test and Deploy
+```bash
+docker compose up --build
+```
 
-Use the built-in continuous integration in GitLab.
+The API will be available at:
+**[http://localhost:8000/docs](http://localhost:8000/docs)**
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+---
 
-***
+## Available Endpoints
 
-# Editing this README
+### `POST /summarize`
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+Summarizes input text.
 
-## Suggestions for a good README
+```json
+{
+  "text": "A long article or passage...(has to be at least 250 characters.)"
+}
+```
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+### `POST /similarity`
 
-## Name
-Choose a self-explaining name for your project.
+Returns the most similar text to a query from a list.
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+```json
+{
+  "query": "What is AI?",
+  "texts": ["AI is...", "Cats are cute", "Space is magical place."]
+}
+```
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+### `GET /health`
+Return time duration of openned application.
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+---
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+## The Process
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+Initially, the project used **OpenAI** as suggested in the coding challenge documentation. However, due to billing and quota limitations, I decided to switch to an alternative.
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+After researching, I found **Cohere**, which offers a summarization and embedding model quite similar to OpenAI’s. While it allowed more flexibility without requiring a paid tier, it's still not ideal for large-scale production, as it has a 1000-requests-per-month free cap.
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+I also asked peers for advice and was introduced to **Ollama**, a local generative model, but setting that up would require more time and understanding since I hadn't worked with local LLMs before.
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+Another new area for me was **Pytest**. The documentation wasn’t always helpful, so I leaned on ChatGPT for examples and guidance. After some iteration and debugging, I wrote tests covering success and error scenarios for both endpoints.
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+Lastly, I used my experience with **Docker** to containerize the project, making it easy for anyone to run with `docker compose up`. 
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+The service is structured with **async endpoints**, supports structured **JSON logs** using Loguru, and is production-ready for small-scale use.
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+---
 
-## License
-For open source projects, say how it is licensed.
+##  Non-Functional Features
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+-  Docker-first: Just `docker compose up --build`
+-  Async endpoints (`async def`)
+-  JSON logging with Loguru
+-  FastAPI docs auto-rendered at `/docs`
+-  Unit tests using Pytest
+
+---
+
