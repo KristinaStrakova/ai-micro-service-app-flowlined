@@ -53,14 +53,11 @@ Create a `.env` file in the root:
 COHERE_API_KEY=for_now_there_is_mine
 ```
 
-### 3. Run with Docker Compose
+### 3. Run Pytests
 
 ```bash
-docker compose up --build
+pytest /tests
 ```
-
-The API will be available at:
-**[http://localhost:8000/docs](http://localhost:8000/docs)**
 
 ---
 
@@ -102,7 +99,9 @@ I also asked peers for advice and was introduced to **Ollama**, a local generati
 
 Another new area for me was **Pytest**. The documentation wasn’t always helpful, so I leaned on ChatGPT for examples and guidance. After some iteration and debugging, I wrote tests covering success and error scenarios for both endpoints.
 
-Lastly, I used my experience with **Docker** to containerize the project, making it easy for anyone to run with `docker compose up`. 
+In this branch I did not include **Docker** since I focused on getting **Pytest** to work correctly. While testing locally, I encountered persistent import errors such as `ModuleNotFoundError: No module named 'app'`. To resolve these, I used complete relative paths in main.py, which allowed the tests to pass successfully. However, this approach broke compatibility with Docker, which expected a different project structure. Because it was difficult to find a single setup that satisfied both Docker and testing configurations, I chose to separate them into different branches. This branch showcases working **Pytest coverage** for both successful and error scenarios.
+
+**Docker** setup and containerization can be found in the `cohere-with-docker` branch.
 
 The service is structured with **async endpoints**, supports structured **JSON logs** using Loguru, and is production-ready for small-scale use.
 
