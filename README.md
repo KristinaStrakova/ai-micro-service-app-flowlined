@@ -100,9 +100,9 @@ After researching, I found **Cohere**, which offers a summarization and embeddin
 
 I also asked peers for advice and was introduced to **Ollama**, a local generative model, but setting that up would require more time and understanding since I hadn't worked with local LLMs before.
 
-Another new area for me was **Pytest**. The documentation wasn’t always helpful, so I leaned on ChatGPT for examples and guidance. After some iteration and debugging, I wrote tests covering success and error scenarios for both endpoints.
+In this branch I did not include Pytest since I encountered numerous issues with file imports. When running tests locally, pytest consistently responded with errors like `ModuleNotFoundError: No module named 'app'` due to import path conflicts. The only workarounds involved writing complete relative paths in main.py, which then broke the setup when running the service in Docker. Since it was impossible to have a configuration that satisfied both testing and Docker execution simultaneously, I decided to split these efforts into separate branches—demonstrating each skill individually. In this branch I am showcasing my experience with **Docker** to containerize the project, making it easy for anyone to run with `docker compose up`.
 
-Lastly, I used my experience with **Docker** to containerize the project, making it easy for anyone to run with `docker compose up`. 
+**Pytest** are available on the `main` branch.
 
 The service is structured with **async endpoints**, supports structured **JSON logs** using Loguru, and is production-ready for small-scale use.
 
